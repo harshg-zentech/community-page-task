@@ -13,6 +13,7 @@ import { supabase } from '../supabase/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { Comment, PostData, Reply } from '../types/types';
 import { TbSend } from 'react-icons/tb';
+import { toast } from 'react-toastify';
 
 interface CommentProps {
     comment: Comment;
@@ -52,7 +53,7 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
         e.preventDefault();
 
         if (!firstName.trim() && !replyText.trim()) {
-            alert('Please add your name and comment text.');
+            toast.info('Please add your name and comment!');
             return;
         }
 
@@ -116,7 +117,7 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
             handleModalClose(); // Close modal and reset form fields
         } catch (error: any) {
             console.error('Error adding reply:', error.message);
-            alert('Failed to add reply. Please try again.');
+            toast.error('Failed to add reply to post :(');
         }
     };
 

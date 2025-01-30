@@ -22,6 +22,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { AppDispatch } from '../store';
 import type { MediaFile, PostData } from '../types/types';
 import { TbSend } from 'react-icons/tb';
+import { toast } from 'react-toastify';
 
 const Post = ({ post }: { post: PostData }) => {
 	const dispatch: AppDispatch = useDispatch();
@@ -37,7 +38,7 @@ const Post = ({ post }: { post: PostData }) => {
 		e.preventDefault();
 
 		if (!firstName.trim() && !commentText.trim()) {
-			alert('Please enter your name and comment text.');
+			toast.info('Please add your name and comment!',);
 			return;
 		}
 
@@ -86,7 +87,7 @@ const Post = ({ post }: { post: PostData }) => {
 			setCommentText('');
 		} catch (error: any) {
 			console.error('Error adding comment:', error.message);
-			alert('Failed to add comment. Please try again later.');
+			toast.error('Failed to add comment to post :(');
 		}
 	};
 

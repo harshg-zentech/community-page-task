@@ -8,6 +8,7 @@ import { supabase } from '../supabase/supabase';
 import { MdOutlinePermMedia } from "react-icons/md";
 import { PostData } from '../types/types';
 import { TbSend } from "react-icons/tb";
+import { toast } from 'react-toastify';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -44,7 +45,7 @@ const PostCreationForm: React.FC = () => {
 
             if (error) {
                 console.error('Error uploading file:', error.message);
-                alert('File upload failed.');
+                toast.error('Error while uploading the file :(');
                 return [];
             } else {
                 const publicURL = supabase.storage.from('postImages').getPublicUrl(path).data.publicUrl;
@@ -72,12 +73,12 @@ const PostCreationForm: React.FC = () => {
         e.preventDefault();
 
         if (!firstName || !lastName) {
-            alert('Please add your name');
+            toast.info('Please add your name!');
             return;
         }
 
         if (!content.trim() && mediaFiles.length === 0) {
-            alert('Please post something or add media');
+            toast.info('Please post something or add media!');
             return;
         }
 
