@@ -139,8 +139,8 @@ const PostCreationForm: React.FC = () => {
                 }}
             >
                 <CardContent>
-                    <Box display="flex" flexDirection="column" gap={1}>
-                        <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={1} alignItems="center">
+                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 1}}>
+                        <Box sx={{display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 1}}>
                             <TextField
                                 type="text"
                                 value={firstName}
@@ -206,9 +206,6 @@ const PostCreationForm: React.FC = () => {
                                 />
                             </Button>
                         </Box>
-                        {/* <Box display="flex" alignItems="center" >
-
-                        </Box> */}
                     </Box>
                     {mediaFiles.length > 0 && (
                         <Box display="flex" flexWrap={'wrap'} gap={2} mb={2} mt={2}>
@@ -235,7 +232,7 @@ const PostCreationForm: React.FC = () => {
                                                 width: '100%',
                                                 height: '100%',
                                                 objectFit: 'cover',
-                                                borderRadius: '8px',
+                                                borderRadius: '1',
                                             }}
 
 
@@ -255,9 +252,9 @@ const PostCreationForm: React.FC = () => {
                                         size="small"
                                         sx={{
                                             position: 'absolute',
-                                            top: -10,  // Adjust this value to move it outside the image area
-                                            right: -10,  // Adjust this value to move it outside the image area
-                                            zIndex: 10,  // Ensure it's on top of the image
+                                            top: -10,
+                                            right: -10,
+                                            zIndex: 10,
                                             backgroundColor: 'rgba(0, 0, 0, 0.4)',
                                             color: 'white',
                                             height: '24px',

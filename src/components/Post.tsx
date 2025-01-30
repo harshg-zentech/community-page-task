@@ -112,33 +112,38 @@ const Post = ({ post }: { post: PostData }) => {
 		if (mediaFiles.length === 3) {
 			// Three media files: one large and two small side-by-side
 			return (
-				<div
-					style={{
+				<Box
+					sx={{
 						display: 'grid',
-						gap: '8px',
+						gap: 1,
 					}}
 				>
 					{/* Large Media File */}
-					<div
-						style={{
+					<Box
+						sx={{
 							position: 'relative',
 							width: '100%',
 							height: '450px',
-							borderRadius: '8px',
+							borderRadius: 1,
 							overflow: 'hidden',
 						}}
-						onClick={(e) => handleCarouselOpen(e, 0)}
+						onClick={(e: React.MouseEvent<HTMLDivElement>) => handleCarouselOpen(e, 0)}
 					>
 						{mediaFiles[0].type === 'image' ? (
 							<img
 								src={mediaFiles[0].src}
 								alt={`Media 0`}
+								loading='lazy'
 								style={{
 									width: '100%',
 									height: '100%',
 									maxHeight: '800px',
 									objectFit: 'cover',
 									cursor: 'pointer',
+									transition: 'opacity 0.3s ease',
+								}}
+								onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
+									e.currentTarget.style.opacity = '1';
 								}}
 							/>
 						) : (
@@ -153,24 +158,24 @@ const Post = ({ post }: { post: PostData }) => {
 								}}
 							/>
 						)}
-					</div>
+					</Box>
 
 					{/* Two smaller media files */}
-					<div
-						style={{
+					<Box
+						sx={{
 							display: 'grid',
 							gridTemplateColumns: 'repeat(2, 1fr)',
-							gap: '4px',
+							gap: 1,
 						}}
 					>
 						{mediaFiles.slice(1).map((file, idx) => (
-							<div
+							<Box
 								key={idx + 1}
-								style={{
+								sx={{
 									position: 'relative',
 									width: '100%',
 									height: '240px',
-									borderRadius: '8px',
+									borderRadius: 1,
 									overflow: 'hidden',
 								}}
 								onClick={(e: React.MouseEvent<HTMLDivElement>) => handleCarouselOpen(e, idx + 1)}
@@ -179,11 +184,16 @@ const Post = ({ post }: { post: PostData }) => {
 									<img
 										src={file.src}
 										alt={`Media ${idx + 1}`}
+										loading='lazy'
 										style={{
 											width: '100%',
 											height: '100%',
 											objectFit: 'cover',
 											cursor: 'pointer',
+											transition: 'opacity 0.3s ease',
+										}}
+										onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
+											e.currentTarget.style.opacity = '1';
 										}}
 									/>
 								) : (
@@ -198,20 +208,20 @@ const Post = ({ post }: { post: PostData }) => {
 										}}
 									/>
 								)}
-							</div>
+							</Box>
 						))}
-					</div>
-				</div>
+					</Box>
+				</Box>
 			);
 		}
 		// Default handling for other cases (more than 3 or less than 3)
 		return (
-			<div
-				style={{
+			<Box
+				sx={{
 					display: 'grid',
 					gridTemplateColumns: mediaFiles.length === 1 ? '1fr' : 'repeat(2, 1fr)',
-					gap: '4px',
-					borderRadius: '8px',
+					gap: 1,
+					borderRadius: 1,
 					position: 'relative',
 				}}
 			>
@@ -219,27 +229,32 @@ const Post = ({ post }: { post: PostData }) => {
 					const isLastItem = idx === 3 && mediaFiles.length > 4;
 
 					return (
-						<div
+						<Box
 							key={idx}
-							style={{
+							sx={{
 								position: 'relative',
 								width: '100%',
 								height: mediaFiles.length === 1 ? 'auto' : '200px',
-								borderRadius: '8px',
+								borderRadius: 1,
 								overflow: 'hidden',
 							}}
-							onClick={(e) => handleCarouselOpen(e, idx)}
+							onClick={(e: React.MouseEvent<HTMLDivElement>) => handleCarouselOpen(e, idx)}
 						>
 							{file.type === 'image' ? (
 								<img
 									src={file.src}
 									alt={`Media ${idx}`}
+									loading='lazy'
 									style={{
 										width: '100%',
 										height: '100%',
 										objectFit: 'cover',
 										cursor: 'pointer',
 										filter: isLastItem ? 'brightness(0.7)' : 'none',
+										transition: 'opacity 0.3s ease',
+									}}
+									onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
+										e.currentTarget.style.opacity = '1';
 									}}
 								/>
 							) : (
@@ -257,8 +272,8 @@ const Post = ({ post }: { post: PostData }) => {
 							)}
 
 							{isLastItem && (
-								<div
-									style={{
+								<Box
+									sx={{
 										position: 'absolute',
 										top: 0,
 										left: 0,
@@ -275,51 +290,56 @@ const Post = ({ post }: { post: PostData }) => {
 									}}
 								>
 									+{mediaFiles.length - 4} more
-								</div>
+								</Box>
 							)}
-						</div>
+						</Box>
 					);
 				})}
-			</div>
+			</Box>
 		);
 	};
 
 	return (
 		<Card
 			sx={{
-				mt: { xs: 2, sm: 3, md: 4 }, // Responsive margin for different screen sizes
-				width: { xs: '100%', sm: '100%', md: '760px' }, // Full width on small screens, fixed width on larger screens
+				display: 'flex',
+				flexDirection: 'column',
+				gap: 2,
+				mt: { xs: 2, sm: 3, md: 4 },
+				width: { xs: '100%', md: '760px' },
 				height: 'auto',
 				backgroundColor: 'background.paper',
 				boxShadow: '0 14px 54px rgba(0, 0, 0, 0.03)',
 				borderRadius: 2,
-				borderColor: 'divider',
-				p: { xs: 0, sm: 2, md: 4 }, // Responsive padding
+				borderColor: 'Boxider',
+				p: { xs: 2, md: 4 },
 			}}
 		>
-			<CardContent>
+			<CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 0 }}>
 				{/* Post Author and Content */}
-				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<Avatar sx={{ width: 60, height: 60 }} />
-					<Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: 2, gap: 1 }}>
-						<Typography >
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+					<Avatar sx={{ width: 60, height: 60, fontSize: 30 }}>
+						{post?.user?.firstName[0]?.toUpperCase()}
+					</Avatar>
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+						<Typography sx={{ fontSize: '16px' }}>
 							{post.user.firstName} {post.user.lastName}
 						</Typography>
 						<Typography sx={{ fontSize: '12px', whiteSpace: 'pre' }} color='textDisabled'>{post?.created_at ? formatDistanceToNow(new Date(post.created_at), { addSuffix: true }) : 'some time ago'}</Typography>
 					</Box>
-				</div>
-				{post.content && <Typography sx={{ marginTop: 2, marginBottom: 2 }} variant="body1" paragraph>
+				</Box>
+				{post.content && <Typography sx={{ margin: 0 }} variant="body1" paragraph>
 					{post.content}
 				</Typography>}
 
 				{post.mediaFiles.length > 0 && renderMixedMedia(post.mediaFiles)}
 
 				{/* Comments Header */}
-				<Box display={'flex'} justifyContent={'space-between'} mt={3} >
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
 
-					<Box sx={{ display: 'flex', cursor: 'pointer' }} onClick={() => setShowCommentBox((prev) => !prev)} >
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => setShowCommentBox((prev) => !prev)} >
 						<LuMessageCircleMore style={{ color: 'gray', fontSize: '20px', marginTop: '2px' }} />
-						<Typography sx={{ color: 'gray', pl: 1 }}>Comment</Typography>
+						<Typography sx={{ color: 'gray' }}>Comment</Typography>
 					</Box>
 					<Typography sx={{ color: '#2f65b9' }}>
 						{(!post?.comments || post?.comments.length === 0)
@@ -331,8 +351,8 @@ const Post = ({ post }: { post: PostData }) => {
 
 				</Box>
 				{showCommentBox && (
-					<Box display="flex" flexDirection="column" my={2} gap={1}>
-						<Box display="flex" gap={1} alignItems="center">
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+						<Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
 							<TextField
 								type="text"
 								value={firstName}
@@ -345,7 +365,7 @@ const Post = ({ post }: { post: PostData }) => {
 								size="small"
 								InputProps={{
 									sx: {
-										borderRadius: '8px',
+										borderRadius: '1',
 
 										'&:hover .MuiOutlinedInput-notchedOutline': {
 											border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
@@ -372,7 +392,7 @@ const Post = ({ post }: { post: PostData }) => {
 								required
 								InputProps={{
 									sx: {
-										borderRadius: '8px',
+										borderRadius: '1',
 
 										'&:hover .MuiOutlinedInput-notchedOutline': {
 											border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
@@ -385,7 +405,7 @@ const Post = ({ post }: { post: PostData }) => {
 								}}
 							/>
 						</Box>
-						<Box display="flex" gap={1} alignItems="center">
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<TextField
 								type="text"
 								value={commentText}
@@ -407,7 +427,7 @@ const Post = ({ post }: { post: PostData }) => {
 										</InputAdornment>
 									),
 									sx: {
-										borderRadius: '8px',
+										borderRadius: '1',
 
 										'&:hover .MuiOutlinedInput-notchedOutline': {
 											border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
@@ -425,12 +445,12 @@ const Post = ({ post }: { post: PostData }) => {
 			</CardContent>
 
 			{/* Display Comments */}
-			<div>
+			<Box>
 				{post?.comments?.map((comment: any) => (
 					<Comment key={comment?.id} comment={comment} postId={post?.id ?? 0} post={post} activeCommentId={activeCommentId}
 						setActiveCommentId={setActiveCommentId} />
 				))}
-			</div>
+			</Box>
 
 			<Dialog open={openCarousel} onClose={() => setOpenCarousel(false)} fullWidth maxWidth="md" sx={{ '.MuiPaper-root': {
 				backgroundColor: 'transparent',
@@ -443,7 +463,7 @@ const Post = ({ post }: { post: PostData }) => {
 						alignItems: 'center',
 						padding: 0,
 						width: '100%',
-						height: '600px' // Ensuring it takes full height of the dialog
+						height: '600px'
 					}}
 				>
 					<Carousel
@@ -458,34 +478,39 @@ const Post = ({ post }: { post: PostData }) => {
 						}}
 						sx={{
 							width: '100%',
-							height: '600px', // Ensures carousel fills the available height
+							height: '600px',
 							overflow: 'hidden',
 						}}
 						autoPlay={post?.mediaFiles?.some((media: MediaFile) => media?.type === 'video') ? false : true} // Disable autoplay if there are videos
 					>
 						{post?.mediaFiles?.map((media: MediaFile, idx: number) => {
 							return (
-								<div key={idx} style={{ width: '100%', height: '600px', position: 'relative' }}>
-									{post?.mediaFiles[currentIndex]?.type === 'image' ? (
+								<Box key={idx} sx={{ width: '100%', height: '600px', position: 'relative' }}>
+									{media?.type === 'image' ? (
 										<img
-											src={post?.mediaFiles[currentIndex]?.src}
+											src={media?.src}
 											alt={`Slide ${idx + 1}`}
+											loading='lazy'
 											style={{
 												width: '100%',
 												height: '100%',
-												objectFit: 'contain', // Ensure the image fits nicely within the container
+												objectFit: 'contain',
+												transition: 'opacity 0.3s ease',
+											}}
+											onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
+												e.currentTarget.style.opacity = '1';
 											}}
 										/>
-									) : post?.mediaFiles[currentIndex]?.type === 'video' ? (
+									) : media?.type === 'video' ? (
 										<iframe
 											key={idx}
-											src={post?.mediaFiles[currentIndex]?.src} // Assuming this is a YouTube/Vimeo link
-											width="100%" // Full width of the parent container (carousel)
-											height="100%" // Full height of the parent container (carousel)
+											src={media?.src}
+											width="100%"
+											height="100%"
 											title={`Media content ${currentIndex + 1}`}
 											style={{
-												objectFit: 'contain', // Ensures the video fits within the container without cropping
-												border: 'none', // Removes iframe border
+												objectFit: 'cover',
+												border: 'none',
 											}}
 											allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 											allowFullScreen
@@ -506,7 +531,7 @@ const Post = ({ post }: { post: PostData }) => {
 									>
 										{`${currentIndex + 1} / ${post?.mediaFiles?.length}`}
 									</Typography>
-								</div>
+								</Box>
 							);
 						})}
 					</Carousel>

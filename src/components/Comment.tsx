@@ -124,131 +124,107 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
 
     return (
         <Box sx={{
-            // ml: comment.level * 20,
-            // marginBottom: 2,
-            pl: 2,
-            sm: {
-                // ml: comment.level * 10, // Adjust the margin-left on small screens
-                pl: 1,
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
         }}>
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                sm: {
-                    gap: '4px', // Reduce the gap on smaller screens
-                },
-            }}>
-                <Avatar sx={{ width: 30, height: 30 }}>
-                    {comment?.user?.firstName[0]?.toUpperCase()}
-                </Avatar>
+            <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                 <Box sx={{
                     display: 'flex',
-                    justifyContent: 'center',
                     alignItems: 'center',
-                    sm: {
-                        flexDirection: 'column', // Stack elements vertically on small screens
-                        alignItems: 'flex-start',
-                    },
-                    xs: {
-                        flexDirection: 'row', // Row layout for xs screens
-                        justifyContent: 'flex-start', // Align to the left on extra small screens
-                    },
+                    gap: '12px',
                 }}>
-                    <Typography mr={1} sx={{
-                        fontSize: {
-                            xs: "12px", // Extra small screens (mobile)
-                            sm: "14px", // Small screens
-                            md: "16px", // Medium screens
-                            lg: "16px", // Large screens
-                            xl: "16px", // Extra large screens
-                        },
+                    <Avatar sx={{ width: 30, height: 30, fontSize: 15 }}>
+                        {comment?.user?.firstName[0]?.toUpperCase()}
+                    </Avatar>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        justifyContent: 'center',
+                        alignItems: { xs: 'flex-start', sm: 'center' },
+                        gap: { xs: 0, sm: 1 },
                     }}>
-                        {comment?.user?.firstName.charAt(0).toUpperCase() + comment?.user?.firstName.slice(1).toLowerCase()} {comment?.user?.lastName.charAt(0).toUpperCase() + comment?.user?.lastName.slice(1).toLowerCase()}
-                    </Typography>
+                        <Typography sx={{
+                            fontSize: {
+                                xs: "12px", // Extra small screens (mobile)
+                                sm: "14px", // Small screens
+                                md: "16px", // Medium screens
+                                lg: "16px", // Large screens
+                                xl: "16px", // Extra large screens
+                            },
+                        }}>
+                            {comment?.user?.firstName.charAt(0).toUpperCase() + comment?.user?.firstName.slice(1).toLowerCase()} {comment?.user?.lastName.charAt(0).toUpperCase() + comment?.user?.lastName.slice(1).toLowerCase()}
+                        </Typography>
 
-                    <Typography sx={{
-                        fontSize: '12px',
-                        fontStyle: 'normal',
-                        color: 'gray',
-                        xs: {
-                            fontSize: '10px', // Adjust font size for xs screens
-                        },
-                    }}>
-                        replied {comment?.created_at ? formatDistanceToNow(new Date(comment.created_at), { addSuffix: true }) : 'some time ago'}
-                    </Typography>
+                        <Typography sx={{
+                            fontSize: { xs: '10px', sm: '12px' },
+                            fontStyle: 'normal',
+                            color: 'gray',
+                        }}>
+                            replied {comment?.created_at ? formatDistanceToNow(new Date(comment.created_at), { addSuffix: true }) : 'some time ago'}
+                        </Typography>
+                    </Box>
                 </Box>
 
-            </Box>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, pl: 5}}>
+                    <Typography sx={{
+                        width: '100%',
+                        fontSize: {
+                            xs: "12px", // Extra small screens (mobile)
+                            sm: "12px", // Small screens
+                            md: "12px", // Medium screens
+                            lg: "12px", // Large screens
+                            xl: "12px", // Extra large screens
+                        },
+                    }} >
+                        <span style={{ backgroundColor: "whitesmoke", padding: '6px', borderRadius: '4px' }}>
+                            {comment.text}
+                        </span>
+                    </Typography>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                        {comment?.replies.length > 0 && (
+                            <span
+                                style={{
+                                    fontSize: '12px',
+                                    cursor: 'pointer',
+                                    color: 'gray',
+                                }}
+                            >
+                                {comment?.replies?.length === 0
+                                    ? "" // No replies, show nothing
+                                    : comment?.replies?.length === 1
+                                        ? "1 reply" // One reply, show "1 reply"
+                                        : `${comment?.replies?.length} replies`} {/* More than one, show "X replies" */}
+                            </span>
+                        )}
 
-            <Box mb={3}>
-                <Typography sx={{
-                    width: '100%',
-                    p: 1,
-                    m: 1,
-                    ml: 4,
-                    sm: {
-                        ml: 2, // Adjust the left margin on smaller screens
-                    },
-                    fontSize: {
-                        xs: "12px", // Extra small screens (mobile)
-                        sm: "12px", // Small screens
-                        md: "12px", // Medium screens
-                        lg: "12px", // Large screens
-                        xl: "12px", // Extra large screens
-                    },
-                }} >
-                    <span style={{ backgroundColor: "whitesmoke", padding: '6px', borderRadius: '4px' }}>
-                        {comment.text}
-                    </span>
-                </Typography>
-                <Box m={1} pl={4} display={'flex'} gap={2}>
-                    {comment?.replies.length > 0 && (
+
                         <span
+                            onClick={handleReplyClick}
                             style={{
-                                // marginLeft: '10px',
-                                fontSize: '12px',
+                                fontSize: '14px',
+                                fontWeight: 'bold',
                                 cursor: 'pointer',
-                                color: 'gray',
+                                color: 'gray'
                             }}
                         >
-                            {comment?.replies?.length === 0
-                                ? "" // No replies, show nothing
-                                : comment?.replies?.length === 1
-                                    ? "1 reply" // One reply, show "1 reply"
-                                    : `${comment?.replies?.length} replies`} {/* More than one, show "X replies" */}
+                            Reply
                         </span>
-                    )}
-
-
-                    <span
-                        onClick={handleReplyClick}
-                        style={{
-                            // marginLeft: '10px',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            color: 'gray',
-
-                        }}
-                    >
-                        Reply
-                    </span>
+                    </Box>
                 </Box>
             </Box>
 
             {/* Render replies */}
-            <div style={{ marginLeft: '10px' }}>
+            {comment?.replies?.length ? <Box sx={{ paddingLeft: '10px' }}>
                 {comment?.replies?.map((reply: Reply) => (
                     <Comments key={reply.id} comment={reply} postId={postId} post={post} activeCommentId={activeCommentId} setActiveCommentId={setActiveCommentId} />
                 ))}
-            </div>
+            </Box> : null}
 
             {/* Modal for reply */}
             {activeCommentId === comment.id && (
-                <Box display="flex" flexDirection="column" my={2} gap={1}>
-                    <Box display="flex" gap={1} alignItems="center">
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 1, my: 2}}>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         <TextField
                             type="text"
                             value={firstName}
@@ -261,16 +237,16 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                             size="small"
                             InputProps={{
                                 sx: {
-                                    borderRadius: '8px',
+                                    borderRadius: '1',
 
                                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // No border by default
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
                                     '&:not(.Mui-focused) .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // Set hover border after losing focus
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
 
                                 },
@@ -288,20 +264,20 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                             required
                             InputProps={{
                                 sx: {
-                                    borderRadius: '8px',
+                                    borderRadius: '1',
 
                                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // No border by default
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
 
                                 },
                             }}
                         />
                     </Box>
-                    <Box display="flex" gap={1} alignItems="center">
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         <TextField
                             type="text"
                             value={replyText}
@@ -323,13 +299,13 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                                     </InputAdornment>
                                 ),
                                 sx: {
-                                    borderRadius: '8px',
+                                    borderRadius: '1',
 
                                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // Default MUI border on hover
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)', // No border by default
+                                        border: '1px solid rgba(0, 0, 0, 0.23)'
                                     },
 
                                 }

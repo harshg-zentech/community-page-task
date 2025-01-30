@@ -14,7 +14,7 @@ const App: React.FC = () => {
     <AppTheme>
       <Box sx={{ bgcolor: '#f8f9fa', minHeight: '100vh', p: 2 }}>
         <Typography variant="h4" gutterBottom textAlign={'center'} mb={3}>
-          Community Page
+          Community
         </Typography>
         <PostCreationForm />
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>

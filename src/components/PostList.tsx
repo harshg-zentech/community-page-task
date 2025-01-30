@@ -19,17 +19,15 @@ const PostList: React.FC = () => {
 
     if (loading) {
         return (
-            <>
-                <Stack sx={{ width: '100%', maxWidth: '760px' }}>
-                    <LinearProgress color="inherit" sx={{ borderBottomLeftRadius: 2, borderBottomRightRadius: 2 }} />
-                </Stack>
-            </>
+            <Stack sx={{ width: '100%', maxWidth: '760px' }}>
+                <LinearProgress color="inherit" sx={{ borderBottomLeftRadius: 2, borderBottomRightRadius: 2 }} />
+            </Stack>
         )
     }
 
     if (error) {
         return (
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: { xs: 2, sm: 3, md: 4 }}}>
                 <Card
                     sx={{
                         backgroundColor: 'background.paper',
@@ -55,11 +53,11 @@ const PostList: React.FC = () => {
     const sortedPosts: PostData[] = [...posts].sort((a, b) => new Date(b?.created_at).getTime() - new Date(a.created_at).getTime());
 
     return (
-        <div>
+        <Box>
             {sortedPosts.map((post, index) => (
                 <Post key={index} post={post} />
             ))}
-        </div>
+        </Box>
     );
 };
 
