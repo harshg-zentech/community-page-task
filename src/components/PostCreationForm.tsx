@@ -9,6 +9,7 @@ import { MdOutlinePermMedia } from "react-icons/md";
 import { PostData } from '../types/types';
 import { TbSend } from "react-icons/tb";
 import { toast } from 'react-toastify';
+import { handleNameChange } from '../services/utils';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -29,6 +30,8 @@ const PostCreationForm: React.FC = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [firstNameError, setFirstNameError] = useState(false);
+    const [lastNameError, setLastNameError] = useState(false);
 
     const handleUploadFiles = async () => {
         const urls: { url: string; type: string }[] = []; // Array to store URL and media type
@@ -139,25 +142,37 @@ const PostCreationForm: React.FC = () => {
                 }}
             >
                 <CardContent>
-                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 1}}>
-                        <Box sx={{display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 1}}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 1 }}>
                             <TextField
                                 type="text"
                                 value={firstName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setFirstName, setFirstNameError)}
+                                helperText={firstNameError ? 'Only alphabetic characters are allowed.' : ''}
+                                sx={{
+                                    minWidth: 200,
+                                    height: (firstNameError || lastNameError) ? '56px' : '50px'
+                                }}
                                 placeholder="First Name"
                                 required
                                 size="small"
                                 fullWidth
+                                error={firstNameError}
                             />
                             <TextField
                                 type="text"
                                 value={lastName}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setLastName, setLastNameError)}
                                 placeholder="Last Name"
                                 size="small"
                                 fullWidth
                                 required
+                                error={lastNameError}
+                                helperText={lastNameError ? 'Only alphabetic characters are allowed.' : ''}
+                                sx={{
+                                    minWidth: 200,
+                                    height: (firstNameError || lastNameError) ? '56px' : '50px'
+                                }}// Ensure consistent height
                             />
                         </Box>
                         <Box display="flex" alignItems="center" gap={1}>
@@ -178,9 +193,11 @@ const PostCreationForm: React.FC = () => {
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSubmit(e)} sx={{ '&:hover': {
-                                                backgroundColor: 'transparent',
-                                            } }}>
+                                            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleSubmit(e)} sx={{
+                                                '&:hover': {
+                                                    backgroundColor: 'transparent',
+                                                }
+                                            }}>
                                                 <TbSend fontSize={24} />
                                             </IconButton>
                                         </InputAdornment>

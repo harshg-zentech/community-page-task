@@ -23,11 +23,14 @@ import { AppDispatch } from '../store';
 import type { MediaFile, PostData } from '../types/types';
 import { TbSend } from 'react-icons/tb';
 import { toast } from 'react-toastify';
+import { handleNameChange } from '../services/utils';
 
 const Post = ({ post }: { post: PostData }) => {
 	const dispatch: AppDispatch = useDispatch();
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
+	const [firstNameError, setFirstNameError] = useState(false);
+	const [lastNameError, setLastNameError] = useState(false);
 	const [commentText, setCommentText] = useState('');
 	const [showCommentBox, setShowCommentBox] = useState(false);
 	const [openCarousel, setOpenCarousel] = useState(false)
@@ -335,7 +338,7 @@ const Post = ({ post }: { post: PostData }) => {
 				{post.mediaFiles.length > 0 && renderMixedMedia(post.mediaFiles)}
 
 				{/* Comments Header */}
-				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => setShowCommentBox((prev) => !prev)} >
 						<LuMessageCircleMore style={{ color: 'gray', fontSize: '20px', marginTop: '2px' }} />
@@ -352,17 +355,21 @@ const Post = ({ post }: { post: PostData }) => {
 				</Box>
 				{showCommentBox && (
 					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-						<Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<TextField
 								type="text"
 								value={firstName}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-									setFirstName(e.target.value)
-								}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setFirstName, setFirstNameError)}
+								helperText={firstNameError ? 'Only alphabetic characters are allowed.' : ''}
 								placeholder="First Name"
 								fullWidth
 								required
+								error={firstNameError}
 								size="small"
+								sx={{
+									minWidth: 200,
+									height: (firstNameError || lastNameError) ? '56px' : '50px'
+								}}
 								InputProps={{
 									sx: {
 										borderRadius: '1',
@@ -372,24 +379,24 @@ const Post = ({ post }: { post: PostData }) => {
 										},
 										'& .MuiOutlinedInput-notchedOutline': {
 											border: '1px solid rgba(0, 0, 0, 0.23)', // No border by default
-										},
-										'&:not(.Mui-focused) .MuiOutlinedInput-notchedOutline': {
-											border: '1px solid rgba(0, 0, 0, 0.23)', // Set hover border after losing focus
-										},
-
+										}
 									},
 								}}
 							/>
 							<TextField
 								type="text"
 								value={lastName}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-									setLastName(e.target.value)
-								}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setLastName, setLastNameError)}
+								helperText={lastNameError ? 'Only alphabetic characters are allowed.' : ''}
 								placeholder="Last Name"
 								size="small"
 								fullWidth
 								required
+								error={lastNameError}
+								sx={{
+									minWidth: 200,
+									height: (firstNameError || lastNameError) ? '56px' : '40px'
+								}}
 								InputProps={{
 									sx: {
 										borderRadius: '1',
@@ -399,8 +406,7 @@ const Post = ({ post }: { post: PostData }) => {
 										},
 										'& .MuiOutlinedInput-notchedOutline': {
 											border: '1px solid rgba(0, 0, 0, 0.23)', // No border by default
-										},
-
+										}
 									},
 								}}
 							/>
@@ -419,10 +425,12 @@ const Post = ({ post }: { post: PostData }) => {
 								InputProps={{
 									endAdornment: (
 										<InputAdornment position="end">
-											<IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleCommentSubmit(e)} sx={{ '&:hover': {
+											<IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleCommentSubmit(e)} sx={{
+												'&:hover': {
 													backgroundColor: 'transparent',
-											} }}>
-													<TbSend fontSize={24} />
+												}
+											}}>
+												<TbSend fontSize={24} />
 											</IconButton>
 										</InputAdornment>
 									),
@@ -446,16 +454,18 @@ const Post = ({ post }: { post: PostData }) => {
 
 			{/* Display Comments */}
 			<Box>
-				{post?.comments?.map((comment: any) => (
+				{post?.comments?.map((comment: Comment | any) => (
 					<Comment key={comment?.id} comment={comment} postId={post?.id ?? 0} post={post} activeCommentId={activeCommentId}
 						setActiveCommentId={setActiveCommentId} />
 				))}
 			</Box>
 
-			<Dialog open={openCarousel} onClose={() => setOpenCarousel(false)} fullWidth maxWidth="md" sx={{ '.MuiPaper-root': {
-				backgroundColor: 'transparent',
-				boxShadow: 'none'
-			} }}>
+			<Dialog open={openCarousel} onClose={() => setOpenCarousel(false)} fullWidth maxWidth="md" sx={{
+				'.MuiPaper-root': {
+					backgroundColor: 'transparent',
+					boxShadow: 'none'
+				}
+			}}>
 				<DialogContent
 					sx={{
 						display: 'flex',

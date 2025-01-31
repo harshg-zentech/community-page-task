@@ -14,6 +14,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Comment, PostData, Reply } from '../types/types';
 import { TbSend } from 'react-icons/tb';
 import { toast } from 'react-toastify';
+import { handleNameChange } from '../services/utils';
 
 interface CommentProps {
     comment: Comment;
@@ -28,6 +29,8 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
     const [replyText, setReplyText] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [firstNameError, setFirstNameError] = useState(false);
+    const [lastNameError, setLastNameError] = useState(false);
 
     const handleReplyClick = () => {
         // Toggle the reply input for this comment
@@ -128,7 +131,7 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
             flexDirection: 'column',
             gap: '12px'
         }}>
-            <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -166,7 +169,7 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                     </Box>
                 </Box>
 
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, pl: 5}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pl: 5 }}>
                     <Typography sx={{
                         width: '100%',
                         fontSize: {
@@ -181,7 +184,7 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                             {comment.text}
                         </span>
                     </Typography>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         {comment?.replies.length > 0 && (
                             <span
                                 style={{
@@ -223,18 +226,22 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
 
             {/* Modal for reply */}
             {activeCommentId === comment.id && (
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 1, my: 2}}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <TextField
                             type="text"
                             value={firstName}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setFirstName(e.target.value)
-                            }
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setFirstName, setFirstNameError)}
+                            helperText={firstNameError ? 'Only alphabetic characters are allowed.' : ''}
                             placeholder="First Name"
                             fullWidth
                             required
+                            error={firstNameError}
                             size="small"
+                            sx={{
+                                minWidth: 200,
+                                height: (firstNameError || lastNameError) ? '56px' : '50px'
+                            }}
                             InputProps={{
                                 sx: {
                                     borderRadius: '1',
@@ -244,24 +251,24 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
                                         border: '1px solid rgba(0, 0, 0, 0.23)'
-                                    },
-                                    '&:not(.Mui-focused) .MuiOutlinedInput-notchedOutline': {
-                                        border: '1px solid rgba(0, 0, 0, 0.23)'
-                                    },
-
+                                    }
                                 },
                             }}
                         />
                         <TextField
                             type="text"
                             value={lastName}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setLastName(e.target.value)
-                            }
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleNameChange(e, setLastName, setLastNameError)}
+                            helperText={lastNameError ? 'Only alphabetic characters are allowed.' : ''}
                             placeholder="Last Name"
                             size="small"
                             fullWidth
                             required
+                            error={lastNameError}
+                            sx={{
+                                minWidth: 200,
+                                height: (firstNameError || lastNameError) ? '56px' : '50px'
+                            }}
                             InputProps={{
                                 sx: {
                                     borderRadius: '1',
@@ -271,13 +278,12 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
                                         border: '1px solid rgba(0, 0, 0, 0.23)'
-                                    },
-
+                                    }
                                 },
                             }}
                         />
                     </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <TextField
                             type="text"
                             value={replyText}
@@ -291,9 +297,11 @@ const Comments: React.FC<CommentProps> = ({ comment, postId, post, activeComment
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleReplySubmit(e, comment.id || 0)} sx={{ '&:hover': {
-                                            backgroundColor: 'transparent',
-                                        } }}>
+                                        <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleReplySubmit(e, comment.id || 0)} sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'transparent',
+                                            }
+                                        }}>
                                             <TbSend fontSize={24} />
                                         </IconButton>
                                     </InputAdornment>
